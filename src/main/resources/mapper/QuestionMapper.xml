@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ailearning.mapper.QuestionMapper">
+
+    <select id="findById" resultType="Question">
+        SELECT * FROM question WHERE id = #{id}
+    </select>
+
+    <select id="findAll" resultType="Question">
+        SELECT * FROM question ORDER BY created_at DESC
+    </select>
+
+    <select id="findByChapterId" resultType="Question">
+        SELECT * FROM question WHERE chapter_id = #{chapterId} ORDER BY created_at DESC
+    </select>
+
+    <select id="findByType" resultType="Question">
+        SELECT * FROM question WHERE type = #{type} ORDER BY created_at DESC
+    </select>
+
+    <insert id="insert" parameterType="Question" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO question (chapter_id, type, content, options, answer, analysis, difficulty)
+        VALUES (#{chapterId}, #{type}, #{content}, #{options}, #{answer}, #{analysis}, #{difficulty})
+    </insert>
+
+    <update id="update" parameterType="Question">
+        UPDATE question
+        <set>
+            <if test="chapterId != null">chapter_id = #{chapterId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="options != null">options = #{options},</if>
+            <if test="answer != null">answer = #{answer},</if>
+            <if test="analysis != null">analysis = #{analysis},</if>
+            <if test="difficulty != null">difficulty = #{difficulty},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:sqlite:learning.db
+    driver-class-name: org.sqlite.JDBC
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.ailearning.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+# AI配置
+ai:
+  api-key: your-api-key-here
+  api-url: https://api.deepseek.com/v1/chat/completions
+  model: deepseek-chat
+
+# JWT配置
+jwt:
+  secret: your-secret-key-here-change-in-production
+  expiration: 86400000

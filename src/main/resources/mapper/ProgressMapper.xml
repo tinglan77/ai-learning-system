@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ailearning.mapper.ProgressMapper">
+
+    <select id="findById" resultType="Progress">
+        SELECT * FROM progress WHERE id = #{id}
+    </select>
+
+    <select id="findByUserId" resultType="Progress">
+        SELECT * FROM progress WHERE user_id = #{userId} ORDER BY updated_at DESC
+    </select>
+
+    <select id="findByUserIdAndChapterId" resultType="Progress">
+        SELECT * FROM progress WHERE user_id = #{userId} AND chapter_id = #{chapterId}
+    </select>
+
+    <insert id="insert" parameterType="Progress" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO progress (user_id, chapter_id, status, score, study_time, last_study_time)
+        VALUES (#{userId}, #{chapterId}, #{status}, #{score}, #{studyTime}, #{lastStudyTime})
+    </insert>
+
+    <update id="update" parameterType="Progress">
+        UPDATE progress
+        <set>
+            <if test="status != null">status = #{status},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="studyTime != null">study_time = #{studyTime},</if>
+            <if test="lastStudyTime != null">last_study_time = #{lastStudyTime},</if>
+            updated_at = CURRENT_TIMESTAMP
+        </set>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

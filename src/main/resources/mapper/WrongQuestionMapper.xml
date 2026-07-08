@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ailearning.mapper.WrongQuestionMapper">
+
+    <select id="findById" resultType="WrongQuestion">
+        SELECT * FROM wrong_question WHERE id = #{id}
+    </select>
+
+    <select id="findByUserId" resultType="WrongQuestion">
+        SELECT * FROM wrong_question WHERE user_id = #{userId} ORDER BY last_wrong_time DESC
+    </select>
+
+    <select id="findByUserIdAndQuestionId" resultType="WrongQuestion">
+        SELECT * FROM wrong_question WHERE user_id = #{userId} AND question_id = #{questionId}
+    </select>
+
+    <insert id="insert" parameterType="WrongQuestion" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO wrong_question (user_id, question_id, user_answer, wrong_count, status, note)
+        VALUES (#{userId}, #{questionId}, #{userAnswer}, #{wrongCount}, #{status}, #{note})
+    </insert>
+
+    <update id="update" parameterType="WrongQuestion">
+        UPDATE wrong_question
+        <set>
+            <if test="userAnswer != null">user_answer = #{userAnswer},</if>
+            <if test="wrongCount != null">wrong_count = #{wrongCount},</if>
+            <if test="lastWrongTime != null">last_wrong_time = #{lastWrongTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="note != null">note = #{note},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="incrementWrongCount">
+        UPDATE wrong_question SET wrong_count = wrong_count + 1, last_wrong_time = CURRENT_TIMESTAMP WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM wrong_question WHERE id = #{id}
+    </delete>
+
+</mapper>

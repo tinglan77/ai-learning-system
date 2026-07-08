@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ailearning.mapper.ResourceMapper">
+
+    <select id="findById" resultType="Resource">
+        SELECT * FROM resource WHERE id = #{id}
+    </select>
+
+    <select id="findAll" resultType="Resource">
+        SELECT * FROM resource ORDER BY created_at DESC
+    </select>
+
+    <select id="findByChapterId" resultType="Resource">
+        SELECT * FROM resource WHERE chapter_id = #{chapterId} ORDER BY created_at DESC
+    </select>
+
+    <insert id="insert" parameterType="Resource" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO resource (chapter_id, title, type, url, description, difficulty, view_count)
+        VALUES (#{chapterId}, #{title}, #{type}, #{url}, #{description}, #{difficulty}, #{viewCount})
+    </insert>
+
+    <update id="update" parameterType="Resource">
+        UPDATE resource
+        <set>
+            <if test="chapterId != null">chapter_id = #{chapterId},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="difficulty != null">difficulty = #{difficulty},</if>
+            <if test="viewCount != null">view_count = #{viewCount},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="incrementViewCount">
+        UPDATE resource SET view_count = view_count + 1 WHERE id = #{id}
+    </update>
+
+</mapper>
