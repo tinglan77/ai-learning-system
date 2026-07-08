@@ -3,8 +3,10 @@ server:
 
 spring:
   datasource:
-    url: jdbc:sqlite:learning.db
-    driver-class-name: org.sqlite.JDBC
+    url: jdbc:mysql://localhost:3306/ai_learning?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 32785a
   sql:
     init:
       mode: always

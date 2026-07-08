@@ -1,6 +1,6 @@
 -- 用户表
-CREATE TABLE IF NOT EXISTS user (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE IF NOT EXISTS `user` (
+    id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
     nickname VARCHAR(50),
@@ -10,89 +10,89 @@ CREATE TABLE IF NOT EXISTS user (
     role VARCHAR(20) DEFAULT 'user',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 章节表（408考研知识点）
-CREATE TABLE IF NOT EXISTS chapter (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE IF NOT EXISTS `chapter` (
+    id INT PRIMARY KEY AUTO_INCREMENT,
     subject VARCHAR(50) NOT NULL,
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    difficulty INTEGER DEFAULT 1,
-    sort_order INTEGER DEFAULT 0,
+    difficulty INT DEFAULT 1,
+    sort_order INT DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 学习进度表
-CREATE TABLE IF NOT EXISTS progress (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    chapter_id INTEGER NOT NULL,
+CREATE TABLE IF NOT EXISTS `progress` (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    chapter_id INT NOT NULL,
     status VARCHAR(20) DEFAULT 'not_started',
-    score INTEGER DEFAULT 0,
-    study_time INTEGER DEFAULT 0,
+    score INT DEFAULT 0,
+    study_time INT DEFAULT 0,
     last_study_time DATETIME,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user(id),
-    FOREIGN KEY (chapter_id) REFERENCES chapter(id)
-);
+    FOREIGN KEY (user_id) REFERENCES `user`(id),
+    FOREIGN KEY (chapter_id) REFERENCES `chapter`(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 学习资源表
-CREATE TABLE IF NOT EXISTS resource (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    chapter_id INTEGER,
+CREATE TABLE IF NOT EXISTS `resource` (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    chapter_id INT,
     title VARCHAR(200) NOT NULL,
     type VARCHAR(20) NOT NULL,
     url VARCHAR(500),
     description TEXT,
-    difficulty INTEGER DEFAULT 1,
-    view_count INTEGER DEFAULT 0,
+    difficulty INT DEFAULT 1,
+    view_count INT DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (chapter_id) REFERENCES chapter(id)
-);
+    FOREIGN KEY (chapter_id) REFERENCES `chapter`(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 练习题表
-CREATE TABLE IF NOT EXISTS question (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    chapter_id INTEGER,
+CREATE TABLE IF NOT EXISTS `question` (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    chapter_id INT,
     type VARCHAR(20) NOT NULL,
     content TEXT NOT NULL,
     options TEXT,
     answer TEXT NOT NULL,
     analysis TEXT,
-    difficulty INTEGER DEFAULT 1,
+    difficulty INT DEFAULT 1,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (chapter_id) REFERENCES chapter(id)
-);
+    FOREIGN KEY (chapter_id) REFERENCES `chapter`(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 错题本表
-CREATE TABLE IF NOT EXISTS wrong_question (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    question_id INTEGER NOT NULL,
+CREATE TABLE IF NOT EXISTS `wrong_question` (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    question_id INT NOT NULL,
     user_answer TEXT,
-    wrong_count INTEGER DEFAULT 1,
+    wrong_count INT DEFAULT 1,
     last_wrong_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(20) DEFAULT 'wrong',
     note TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user(id),
-    FOREIGN KEY (question_id) REFERENCES question(id)
-);
+    FOREIGN KEY (user_id) REFERENCES `user`(id),
+    FOREIGN KEY (question_id) REFERENCES `question`(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 聊天历史表
-CREATE TABLE IF NOT EXISTS chat_history (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
+CREATE TABLE IF NOT EXISTS `chat_history` (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
     role VARCHAR(20) NOT NULL,
     content TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user(id)
-);
+    FOREIGN KEY (user_id) REFERENCES `user`(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 插入初始章节数据（408考研四门科目）
-INSERT OR IGNORE INTO chapter (subject, name, description, difficulty, sort_order) VALUES
+INSERT IGNORE INTO `chapter` (subject, name, description, difficulty, sort_order) VALUES
 ('数据结构', '线性表', '线性表的基本概念和实现', 2, 1),
 ('数据结构', '栈、队列和数组', '栈、队列和数组的基本概念和应用', 2, 2),
 ('数据结构', '树与二叉树', '树的基本概念和二叉树的性质', 3, 3),
@@ -119,6 +119,6 @@ INSERT OR IGNORE INTO chapter (subject, name, description, difficulty, sort_orde
 ('计算机网络', '应用层', '应用层的功能和协议', 2, 24);
 
 -- 插入测试用户
-INSERT OR IGNORE INTO user (username, password, nickname, role) VALUES
+INSERT IGNORE INTO `user` (username, password, nickname, role) VALUES
 ('admin', '123456', '管理员', 'admin'),
 ('test', '123456', '测试用户', 'user');
