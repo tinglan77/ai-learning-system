@@ -84,8 +84,16 @@ const form = reactive({
 })
 
 const filteredChapters = computed(() => {
-  if (!form.subject) return chapters.value
-  return chapters.value.filter(c => c.subject === form.subject)
+  let list = form.subject
+    ? chapters.value.filter(c => c.subject === form.subject)
+    : chapters.value
+  // 按 name 去重
+  const seen = new Set()
+  return list.filter(c => {
+    if (seen.has(c.name)) return false
+    seen.add(c.name)
+    return true
+  })
 })
 
 const generateQuestion = async () => {
