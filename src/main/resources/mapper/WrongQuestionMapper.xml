@@ -6,8 +6,15 @@
         SELECT * FROM wrong_question WHERE id = #{id}
     </select>
 
-    <select id="findByUserId" resultType="WrongQuestion">
-        SELECT * FROM wrong_question WHERE user_id = #{userId} ORDER BY last_wrong_time DESC
+    <select id="findByUserId" resultType="com.ailearning.entity.WrongQuestionDetail">
+        SELECT wq.id, wq.user_id AS userId, wq.question_id AS questionId,
+               q.content AS questionContent, q.options, q.answer AS correctAnswer, q.analysis,
+               wq.user_answer AS userAnswer, wq.wrong_count AS wrongCount,
+               wq.last_wrong_time AS lastWrongTime, wq.status, wq.note, wq.created_at AS createdAt
+        FROM wrong_question wq
+        LEFT JOIN question q ON wq.question_id = q.id
+        WHERE wq.user_id = #{userId}
+        ORDER BY wq.last_wrong_time DESC
     </select>
 
     <select id="findByUserIdAndQuestionId" resultType="WrongQuestion">

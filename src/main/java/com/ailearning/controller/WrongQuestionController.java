@@ -2,6 +2,7 @@ package com.ailearning.controller;
 
 import com.ailearning.common.Result;
 import com.ailearning.entity.WrongQuestion;
+import com.ailearning.entity.WrongQuestionDetail;
 import com.ailearning.service.WrongQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class WrongQuestionController {
     private WrongQuestionService wrongQuestionService;
 
     @GetMapping("/user/{userId}")
-    public Result<List<WrongQuestion>> getWrongQuestionsByUserId(@PathVariable Integer userId) {
+    public Result<List<WrongQuestionDetail>> getWrongQuestionsByUserId(@PathVariable Integer userId) {
         return Result.success(wrongQuestionService.findByUserId(userId));
     }
 
@@ -48,5 +49,14 @@ public class WrongQuestionController {
             return Result.success("删除成功");
         }
         return Result.error("删除失败");
+    }
+
+    @PutMapping("/update")
+    public Result<String> updateWrongQuestion(@RequestBody WrongQuestion wrongQuestion) {
+        boolean success = wrongQuestionService.update(wrongQuestion);
+        if (success) {
+            return Result.success("更新成功");
+        }
+        return Result.error("更新失败");
     }
 }

@@ -62,6 +62,9 @@ export const questionApi = {
   },
   getById(id) {
     return request.get(`/question/${id}`)
+  },
+  create(data) {
+    return request.post('/question/create', data)
   }
 }
 
@@ -79,6 +82,9 @@ export const wrongQuestionApi = {
   },
   delete(id) {
     return request.delete(`/wrong-question/delete/${id}`)
+  },
+  update(data) {
+    return request.put('/wrong-question/update', data)
   }
 }
 

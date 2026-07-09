@@ -30,8 +30,21 @@
             <el-form-item label="手机号">
               <el-input v-model="form.phone" />
             </el-form-item>
-            <el-form-item label="头像URL">
-              <el-input v-model="form.avatar" />
+            <el-form-item label="头像">
+              <div style="display: flex; align-items: center; gap: 16px">
+                <el-avatar :size="60" :src="avatarPreview">
+                  {{ form.nickname?.charAt(0) || 'U' }}
+                </el-avatar>
+                <el-upload
+                  action="/api/file/upload"
+                  :show-file-list="false"
+                  :on-success="handleAvatarSuccess"
+                  :before-upload="beforeAvatarUpload"
+                  accept="image/*"
+                >
+                  <el-button type="primary" size="small">上传头像</el-button>
+                </el-upload>
+              </div>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="updateProfile">保存修改</el-button>
@@ -82,7 +95,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useUserStore } from '../stores/user'
 import { userApi, progressApi, wrongQuestionApi } from '../api'
 import { ElMessage } from 'element-plus'
@@ -95,6 +108,35 @@ const form = reactive({
   phone: userInfo.value.phone || '',
   avatar: userInfo.value.avatar || ''
 })
+
+// 头像预览
+const avatarPreview = computed(() => {
+  return form.avatar || ''
+})
+
+// 头像上传前验证
+const beforeAvatarUpload = (file) => {
+  const isImage = file.type.startsWith('image/')
+  const isLt5M = file.size / 1024 / 1024 < 5
+
+  if (!isImage) {
+    ElMessage.error('只能上传图片文件!')
+  }
+  if (!isLt5M) {
+    ElMessage.error('图片大小不能超过 5MB!')
+  }
+  return isImage && isLt5M
+}
+
+// 头像上传成功回调
+const handleAvatarSuccess = (response) => {
+  if (response.code === 200) {
+    form.avatar = response.data.url
+    ElMessage.success('头像上传成功')
+  } else {
+    ElMessage.error(response.message || '上传失败')
+  }
+}
 
 const studyStats = reactive({
   days: 0,

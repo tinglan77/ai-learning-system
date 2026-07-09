@@ -11,6 +11,10 @@ spring:
     init:
       mode: always
       schema-locations: classpath:schema.sql
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
@@ -20,7 +24,7 @@ mybatis:
 
 # AI配置
 ai:
-  api-key: your-api-key-here
+  api-key: sk-5ca95c2a6ed842ce95a6155279db49d2
   api-url: https://api.deepseek.com/v1/chat/completions
   model: deepseek-chat
 
@@ -28,3 +32,8 @@ ai:
 jwt:
   secret: your-secret-key-here-change-in-production
   expiration: 86400000
+
+# 文件上传配置
+spring.servlet.multipart:
+  max-file-size: 5MB
+  max-request-size: 10MB

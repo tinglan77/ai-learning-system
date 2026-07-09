@@ -4,15 +4,28 @@
       <template #header>
         <div class="card-header">
           <span>错题本</span>
-          <el-button type="primary" size="small" @click="refresh">刷新</el-button>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <el-select v-model="statusFilter" placeholder="筛选状态" clearable size="small" style="width: 120px" @change="filterQuestions">
+              <el-option label="待复习" value="wrong" />
+              <el-option label="已掌握" value="correct" />
+            </el-select>
+            <el-button type="primary" size="small" @click="refresh">刷新</el-button>
+          </div>
         </div>
       </template>
 
       <el-table :data="wrongQuestions" style="width: 100%">
         <el-table-column prop="questionContent" label="题目内容" show-overflow-tooltip />
-        <el-table-column prop="userAnswer" label="你的答案" width="150" />
-        <el-table-column prop="correctAnswer" label="正确答案" width="150" />
-        <el-table-column prop="wrongCount" label="错误次数" width="100" />
+        <el-table-column prop="userAnswer" label="你的答案" width="100" />
+        <el-table-column prop="correctAnswer" label="正确答案" width="100" />
+        <el-table-column prop="wrongCount" label="错误次数" width="80" />
+        <el-table-column label="状态" width="100">
+          <template #default="scope">
+            <el-tag :type="scope.row.status === 'correct' ? 'success' : 'danger'" size="small">
+              {{ scope.row.status === 'correct' ? '已掌握' : '待复习' }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="lastWrongTime" label="最后错误时间" width="180">
           <template #default="scope">
             {{ formatDate(scope.row.lastWrongTime) }}
@@ -21,7 +34,11 @@
         <el-table-column label="操作" width="200">
           <template #default="scope">
             <el-button type="primary" size="small" @click="viewDetail(scope.row)">查看详情</el-button>
-            <el-button type="success" size="small" @click="markCorrect(scope.row.id)">标记正确</el-button>
+            <el-button
+              v-if="scope.row.status !== 'correct'"
+              type="success" size="small" @click="markCorrect(scope.row.id)"
+            >标记正确</el-button>
+            <el-tag v-else type="success" size="small">已标记正确</el-tag>
           </template>
         </el-table-column>
       </el-table>
@@ -70,8 +87,18 @@ import { ElMessage } from 'element-plus'
 
 const userStore = useUserStore()
 const wrongQuestions = ref([])
+const allWrongQuestions = ref([])
 const dialogVisible = ref(false)
 const currentQuestion = ref(null)
+const statusFilter = ref('')
+
+const filterQuestions = () => {
+  if (!statusFilter.value) {
+    wrongQuestions.value = allWrongQuestions.value
+  } else {
+    wrongQuestions.value = allWrongQuestions.value.filter(q => q.status === statusFilter.value)
+  }
+}
 
 const formatDate = (dateStr) => {
   if (!dateStr) return '-'
@@ -86,7 +113,8 @@ const formatContent = (content) => {
 const refresh = async () => {
   try {
     const res = await wrongQuestionApi.getByUserId(userStore.userInfo.id)
-    wrongQuestions.value = res.data || []
+    allWrongQuestions.value = res.data || []
+    filterQuestions()
   } catch (e) {
     console.error(e)
   }
@@ -109,13 +137,15 @@ const markCorrect = async (id) => {
 
 const saveNote = async () => {
   try {
-    await wrongQuestionApi.update(userStore.userInfo.id, currentQuestion.value.id, {
+    await wrongQuestionApi.update({
+      id: currentQuestion.value.id,
       note: currentQuestion.value.note
     })
     ElMessage.success('笔记已保存')
     dialogVisible.value = false
   } catch (e) {
     console.error(e)
+    ElMessage.error('保存失败')
   }
 }
 

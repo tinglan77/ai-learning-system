@@ -1,6 +1,7 @@
 package com.ailearning.service;
 
 import com.ailearning.entity.WrongQuestion;
+import com.ailearning.entity.WrongQuestionDetail;
 import com.ailearning.mapper.WrongQuestionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public class WrongQuestionService {
     @Autowired
     private WrongQuestionMapper wrongQuestionMapper;
 
-    public List<WrongQuestion> findByUserId(Integer userId) {
+    public List<WrongQuestionDetail> findByUserId(Integer userId) {
         return wrongQuestionMapper.findByUserId(userId);
     }
 
@@ -55,5 +56,9 @@ public class WrongQuestionService {
 
     public boolean delete(Integer id) {
         return wrongQuestionMapper.deleteById(id) > 0;
+    }
+
+    public boolean update(WrongQuestion wrongQuestion) {
+        return wrongQuestionMapper.update(wrongQuestion) > 0;
     }
 }
